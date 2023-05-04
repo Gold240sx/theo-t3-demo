@@ -6,7 +6,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { api } from "~/utils/api";
-import type { RouterOutputs } from "~/utils/api";
+import { RouterOutputs } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
