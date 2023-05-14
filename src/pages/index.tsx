@@ -69,7 +69,7 @@ const PostView = (props: PostWithUser) => {
         <div key={post.id} className="flex gap-3 border-b border-zinc-600 p-4">
             <Image
                 src={author.profilePicture}
-                alt={` ${author.username} profile picture `}
+                alt={` ${author.username} comment profile picture `}
                 className=" rounded-full"
                 // placeholder={blurDataURL ? "blur" : "empty"}
                 // blurDataURL={blurDataURL}
@@ -109,21 +109,25 @@ const Home: NextPage = (props) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main className="flex h-screen justify-center">
-                <div className="light:bg-zinc-200 w-full border-x border-zinc-200 dark:bg-zinc-900 md:max-w-2xl">
+                <div className="w-full border-x border-zinc-200 bg-zinc-200 dark:bg-zinc-900 md:max-w-2xl">
                     <div className="border-b border-zinc-500 p-4">
                         {/* Sign In / Out Buttons */}
+
                         {!user.isSignedIn && (
                             <div className=" flex justify-center text-center">
                                 <SignInButton />
                             </div>
                         )}
+
                         {user.isSignedIn && <CreatePostWizard />}
                     </div>
+
                     <SignIn
                         path="/sign-in"
                         routing="path"
                         signUpUrl="/sign-up"
                     />
+
                     <div className="flex flex-col">
                         {[...data, ...data]?.map((fullPost) => (
                             <PostView {...fullPost} key={fullPost.post.id} />
