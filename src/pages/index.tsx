@@ -12,22 +12,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 const CreatePostWizard = () => {
-    // const [blurDataURL, setBlurDataURL] = useState("");
     //user Info
     const { user } = useUser();
     if (!user) return null;
-
-    // useEffect(() => {
-    //     (async () => {
-    //         const response = await fetch(
-    //             `/api/blurDataURL?url=${encodeURIComponent(
-    //                 user.profileImageUrl
-    //             )}`
-    //         );
-    //         const data = await response.json();
-    //         setBlurDataURL(data.blurDataURL);
-    //     })();
-    // }, [user.profileImageUrl]);
 
     return (
         <div className="flex w-full justify-center gap-2 dark:placeholder:text-white">
@@ -35,8 +22,6 @@ const CreatePostWizard = () => {
                 src={user.profileImageUrl}
                 alt={` ${user.username} profile picture `}
                 className="flex rounded-full"
-                // placeholder={blurDataURL ? "blur" : "empty"}
-                // blurDataURL={blurDataURL}
                 width={56}
                 height={56}
             />
@@ -51,19 +36,6 @@ type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 
 const PostView = (props: PostWithUser) => {
     const { post, author } = props;
-    // const [blurDataURL, setBlurDataURL] = useState("");
-
-    // useEffect(() => {
-    //     (async () => {
-    //         const response = await fetch(
-    //             `/api/blurDataURL?url=${encodeURIComponent(
-    //                 author.profilePicture
-    //             )}`
-    //         );
-    //         const data = await response.json();
-    //         setBlurDataURL(data.blurDataURL);
-    //     })();
-    // }, [author.profilePicture]);
 
     return (
         <div key={post.id} className="flex gap-3 border-b border-zinc-600 p-4">
@@ -71,8 +43,6 @@ const PostView = (props: PostWithUser) => {
                 src={author.profilePicture}
                 alt={` ${author.username} comment profile picture `}
                 className=" rounded-full"
-                // placeholder={blurDataURL ? "blur" : "empty"}
-                // blurDataURL={blurDataURL}
                 width={56}
                 height={56}
             />
