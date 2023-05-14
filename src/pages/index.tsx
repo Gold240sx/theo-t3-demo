@@ -1,4 +1,5 @@
-import { SignIn, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignIn, SignInButton, useUser } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/clerk-react";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { type NextPage } from "next";
@@ -86,6 +87,11 @@ const Home: NextPage = (props) => {
                         {!user.isSignedIn && (
                             <div className=" flex justify-center text-center">
                                 <SignInButton />
+                            </div>
+                        )}
+                        {user.isSignedIn && (
+                            <div className="ml-auto flex w-fit cursor-pointer rounded-xl border border-yellow-400 px-3 py-2 text-sm opacity-70 hover:opacity-100">
+                                <SignOutButton />
                             </div>
                         )}
 
