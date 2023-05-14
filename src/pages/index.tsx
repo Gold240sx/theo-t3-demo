@@ -12,6 +12,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
+import LoadingPage from "../components/spinner";
+
 const CreatePostWizard = () => {
     //user Info
     const { user } = useUser();
@@ -62,15 +64,28 @@ const PostView = (props: PostWithUser) => {
     );
 };
 
-const Home: NextPage = (props) => {
-    const user = useUser();
-
-    console.log(user);
-
-    const { data, isLoading } = api.posts.getAll.useQuery();
-
-    if (isLoading) return <div>Loading...</div>;
+const Feed = () => {
+    const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
+    if (postsLoading) return <LoadingPage />;
     if (!data) return <div>....Something went wrong.</div>;
+
+    return (
+        <div className="flex flex-col">
+            {[...data, ...data]?.map((fullPost) => (
+                <PostView {...fullPost} key={fullPost.post.id} />
+            ))}
+        </div>
+    );
+};
+
+const Home: NextPage = (props) => {
+    const { isLoaded: userLoaded, isSignedIn } = useUser();
+
+    //start fetcing asap
+    api.posts.getAll.useQuery();
+
+    // return empty div if BOTH aren't loaded since user tends to load faster
+    if (!userLoaded) return <div></div>;
 
     return (
         <>
@@ -84,18 +99,18 @@ const Home: NextPage = (props) => {
                     <div className="border-b border-zinc-500 p-4">
                         {/* Sign In / Out Buttons */}
 
-                        {!user.isSignedIn && (
+                        {!isSignedIn && (
                             <div className=" flex justify-center text-center">
                                 <SignInButton />
                             </div>
                         )}
-                        {user.isSignedIn && (
+                        {isSignedIn && (
                             <div className="ml-auto flex w-fit cursor-pointer rounded-xl border border-yellow-400 px-3 py-2 text-sm opacity-70 hover:opacity-100">
                                 <SignOutButton />
                             </div>
                         )}
 
-                        {user.isSignedIn && <CreatePostWizard />}
+                        {isSignedIn && <CreatePostWizard />}
                     </div>
 
                     <SignIn
@@ -104,11 +119,7 @@ const Home: NextPage = (props) => {
                         signUpUrl="/sign-up"
                     />
 
-                    <div className="flex flex-col">
-                        {[...data, ...data]?.map((fullPost) => (
-                            <PostView {...fullPost} key={fullPost.post.id} />
-                        ))}
-                    </div>
+                    <Feed />
                 </div>
             </main>
         </>
