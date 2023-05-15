@@ -97,12 +97,16 @@ const PostView = (props: PostWithUser) => {
             />
             <div className="flex flex-col">
                 <p className="capitalize text-zinc-400">
-                    <span className=" mr-1 text-teal-400">@</span>
-                    {`${author.username!}`}{" "}
+                    <Link href={` /@${author.username}`}>
+                        <span className=" mr-1 text-teal-400">@</span>
+                        {`${author.username!}`}
+                    </Link>
                     <span className="mr-1 text-zinc-700">|</span>
-                    <span className="text-sm text-amber-500">
-                        {`${dayjs(post.createdAt).fromNow()}`}
-                    </span>
+                    <Link href={` /post/${post.id}`}>
+                        <span className="text-sm text-amber-500">
+                            {`${dayjs(post.createdAt).fromNow()}`}
+                        </span>{" "}
+                    </Link>
                 </p>
                 <span className="capitalize text-zinc-200">{post.content}</span>
             </div>
