@@ -1,8 +1,10 @@
 import { SignIn, SignInButton, useUser } from "@clerk/nextjs";
 import { SignOutButton } from "@clerk/clerk-react";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { type NextPage } from "next";
+import { toast } from "react-hot-toast";
 import Head from "next/head";
 import Link from "next/link";
 
@@ -15,8 +17,26 @@ dayjs.extend(relativeTime);
 import LoadingPage from "../components/spinner";
 
 const CreatePostWizard = () => {
-    //user Info
     const { user } = useUser();
+    const [input, setInput] = useState("");
+    const ctx = api.useContext();
+
+    const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+        onSuccess: () => {
+            setInput("");
+            void ctx.posts.getAll.invalidate();
+        },
+        onError: (e) => {
+            const errorMessage = e.data?.zodError?.fieldErrors.content;
+            if (errorMessage && errorMessage[0]) {
+                toast.error(errorMessage[0]);
+            } else {
+                toast.error("Failed to post! Please try again later.");
+            }
+        },
+    });
+
+    //user Info
     if (!user) return null;
 
     return (
@@ -31,7 +51,19 @@ const CreatePostWizard = () => {
             <input
                 placeholder="Type some stuff"
                 className="grow bg-transparent px-4 outline-none focus:placeholder:opacity-5"
+                onChange={(e) => setInput(e.target.value)}
+                type="text"
+                value={input}
             />
+            <button
+                className="my-auto mt-4 h-fit rounded-lg bg-zinc-800 px-4 py-2 text-white"
+                onClick={() => {
+                    mutate({ content: input });
+                }}
+                disabled={isPosting}
+            >
+                Post
+            </button>
         </div>
     );
 };
@@ -71,7 +103,7 @@ const Feed = () => {
 
     return (
         <div className="flex flex-col">
-            {[...data, ...data]?.map((fullPost) => (
+            {data?.map((fullPost) => (
                 <PostView {...fullPost} key={fullPost.post.id} />
             ))}
         </div>
