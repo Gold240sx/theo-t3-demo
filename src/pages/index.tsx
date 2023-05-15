@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
-import LoadingPage from "../components/spinner";
+import LoadingPage, { Spinner } from "../components/spinner";
 
 const CreatePostWizard = () => {
     const { user } = useUser();
@@ -52,18 +52,32 @@ const CreatePostWizard = () => {
                 placeholder="Type some stuff"
                 className="grow bg-transparent px-4 outline-none focus:placeholder:opacity-5"
                 onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (input !== "") {
+                            mutate({ content: input });
+                        }
+                    }
+                }}
                 type="text"
                 value={input}
             />
-            <button
-                className="my-auto mt-4 h-fit rounded-lg bg-zinc-800 px-4 py-2 text-white"
-                onClick={() => {
-                    mutate({ content: input });
-                }}
-                disabled={isPosting}
-            >
-                Post
-            </button>
+            {input !== "" && !isPosting && (
+                <button
+                    className="my-auto mt-4 h-fit rounded-lg bg-zinc-800 px-4 py-2 text-white"
+                    onClick={() => {
+                        mutate({ content: input });
+                    }}
+                >
+                    Post
+                </button>
+            )}
+            {isPosting && (
+                <div className="flex items-center justify-center">
+                    <Spinner size={20} />
+                </div>
+            )}
         </div>
     );
 };
