@@ -21,6 +21,9 @@ import { PostView } from "~/components/postView";
 
 const CreatePostWizard = () => {
     const { user } = useUser();
+    // Should use React-hook-form instead of state
+    // share the validator on both back and front and
+    // use the same validator for both the mutation and the form
     const [input, setInput] = useState("");
     const ctx = api.useContext();
 
