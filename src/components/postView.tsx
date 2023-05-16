@@ -1,4 +1,3 @@
-import type { RouterOutputs } from "~/utils/api";
 import Link from "next/link";
 import { RouterOutputs } from "~/utils/api";
 import dayjs from "dayjs";

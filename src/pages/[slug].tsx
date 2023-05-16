@@ -2,12 +2,6 @@ import type { NextPage, GetStaticProps, InferGetStaticPropsType } from "next";
 import { generateSSGHelper } from "../server/helpers/ssgHelper";
 import Head from "next/head";
 import { api } from "~/utils/api";
-
-import { appRouter } from "~/server/api/root";
-import { prisma } from "~/server/db";
-import superjson from "superjson";
-import { type } from "os";
-import { TypeOf } from "zod";
 import { PageLayout } from "~/components/layout";
 import Image from "next/image";
 import LoadingPage from "~/components/spinner";
@@ -24,15 +18,15 @@ const ProfileFeed = (props: { userId: string }) => {
     return (
         <div className="flex flex-col">
             {data.map((fullPost) => (
-                <PostView {...fullPost} key={fullPost.id} />
+                <PostView {...fullPost} key={fullPost.post.id} />
             ))}
         </div>
     );
 };
 
 const ProfilePage: NextPage<{ username: string }> = ({
-    username,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+        username,
+    }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const { data } = api.profile.getUserByUsername.useQuery({
         username,
     });
