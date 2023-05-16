@@ -10,6 +10,25 @@ import { type } from "os";
 import { TypeOf } from "zod";
 import { PageLayout } from "~/components/layout";
 import Image from "next/image";
+import LoadingPage from "~/components/spinner";
+import { PostView } from "~/components/postView";
+
+const ProfileFeed = (props: { userId: string }) => {
+    const { data, isLoading } = api.posts.getPostsByUserId.useQuery({
+        userId: props.userId,
+    });
+
+    if (isLoading) return <LoadingPage />;
+    if (!data || data.length === 0) return <div>User has no posts yet!</div>;
+
+    return (
+        <div className="flex flex-col">
+            {data.map((fullPost) => (
+                <PostView {...fullPost} key={fullPost.id} />
+            ))}
+        </div>
+    );
+};
 
 const ProfilePage: NextPage<{ username: string }> = ({
     username,
@@ -17,7 +36,6 @@ const ProfilePage: NextPage<{ username: string }> = ({
     const { data } = api.profile.getUserByUsername.useQuery({
         username,
     });
-
     if (!data) return <div>404</div>;
 
     return (
@@ -40,11 +58,12 @@ const ProfilePage: NextPage<{ username: string }> = ({
                 <div className="h-16"></div>
                 <div className="px-6 py-4 text-2xl capitalize text-teal-400">
                     @
-                    <span className="font-bold text-zinc-200">
+                    <span className="ml-0.5 font-bold text-zinc-200">
                         {`${data.username ?? ""}`}
                     </span>
                 </div>
                 <div className="border-full border-b border-zinc-400"></div>
+                <ProfileFeed userId={data.id} />
             </PageLayout>
         </>
     );

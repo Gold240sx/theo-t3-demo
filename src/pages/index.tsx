@@ -17,6 +17,7 @@ dayjs.extend(relativeTime);
 import LoadingPage, { Spinner } from "../components/spinner";
 import PageLoader from "next/dist/client/page-loader";
 import { PageLayout } from "~/components/layout";
+import { PostView } from "~/components/postView";
 
 const CreatePostWizard = () => {
     const { user } = useUser();
@@ -64,6 +65,7 @@ const CreatePostWizard = () => {
                 }}
                 type="text"
                 value={input}
+                disabled={isPosting}
             />
             {input !== "" && !isPosting && (
                 <button
@@ -80,38 +82,6 @@ const CreatePostWizard = () => {
                     <Spinner size={20} />
                 </div>
             )}
-        </div>
-    );
-};
-type PostWithUser = RouterOutputs["posts"]["getAll"][number];
-
-const PostView = (props: PostWithUser) => {
-    const { post, author } = props;
-
-    return (
-        <div key={post.id} className="flex gap-3 border-b border-zinc-600 p-4">
-            <Image
-                src={author.profilePicture}
-                alt={` ${author.username} comment profile picture `}
-                className=" rounded-full"
-                width={56}
-                height={56}
-            />
-            <div className="flex flex-col">
-                <p className="capitalize text-zinc-400">
-                    <Link href={` /@${author.username}`}>
-                        <span className=" mr-1 text-teal-400">@</span>
-                        {`${author.username!}`}
-                    </Link>
-                    <span className="mr-1 text-zinc-700">|</span>
-                    <Link href={` /post/${post.id}`}>
-                        <span className="text-sm text-amber-500">
-                            {`${dayjs(post.createdAt).fromNow()}`}
-                        </span>{" "}
-                    </Link>
-                </p>
-                <span className="capitalize text-zinc-200">{post.content}</span>
-            </div>
         </div>
     );
 };
