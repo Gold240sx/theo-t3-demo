@@ -81,13 +81,19 @@ if (!!process.env.SKIP_ENV_VALIDATION == false) {
             : client.safeParse(processEnv) // on client we can only validate the ones that are exposed
     );
 
-    if (parsed.success === false) {
-        console.error(
-            "❌ Invalid environment variables:",
-            parsed.error.flatten().fieldErrors
-        );
-        throw new Error("Invalid environment variables");
-    }
+if (parsed.success === false) {
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    console.error("❌ Invalid environment variables:", fieldErrors);
+
+    const errorMessages = Object.entries(fieldErrors)
+        .map(
+            ([variable, errors]) =>
+                `${variable}: ${errors.map((error) => error).join(", ")}`
+        )
+        .join("\n");
+
+    throw new Error(`Invalid environment variables:\n${errorMessages}`);
+}
 
     env = new Proxy(parsed.data, {
         get(target, prop) {
